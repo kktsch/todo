@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors({
     origin: 'https://todo-frontend-4e7s.onrender.com',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true
 }));
 app.use(express.json());
