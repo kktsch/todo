@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/todos';
+const API_URL = 'https://todo-2wt4.onrender.com';
 
 export const fetchTodos = async () => {
     const response = await fetch(API_URL);
