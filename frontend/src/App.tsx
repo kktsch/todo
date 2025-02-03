@@ -31,7 +31,7 @@ interface List {
 
 interface MenuPosition {
   top: number;
-  left: number;
+  right: number;
 }
 
 function App() {
@@ -43,7 +43,7 @@ function App() {
   const [editingTodoId, setEditingTodoId] = useState<{ listId: number | null, todoId: number | null }>({ listId: null, todoId: null })
   const [newName, setNewName] = useState('')
   const [isMenuOpen, setIsMenuOpen] = useState<{ listId: number | null, todoId: number | null }>({ listId: null, todoId: null })
-  const [menuPosition, setMenuPosition] = useState<MenuPosition>({ top: 0, left: 0 })
+  const [menuPosition, setMenuPosition] = useState<MenuPosition>({ top: 0, right: 0 })
 
   useEffect(() => {
     const loadLists = async () => {
@@ -184,27 +184,23 @@ function App() {
   };
 
   const handleTodoMenuClick = (listId: number, todoId: number, event: React.MouseEvent) => {
-    const buttonRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    event.stopPropagation();
+    
     setMenuPosition({
-      top: buttonRect.bottom + 5,
-      left: buttonRect.right - 120
+      top: 0,
+      right: 0
     });
-    setIsMenuOpen({
-      listId,
-      todoId
-    });
+    setIsMenuOpen({ listId, todoId });
   };
 
   const handleListMenuClick = (listId: number, event: React.MouseEvent) => {
-    const buttonRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    event.stopPropagation();
+    
     setMenuPosition({
-      top: buttonRect.bottom + 5,
-      left: buttonRect.right - 120
+      top: 5,
+      right: 0
     });
-    setIsMenuOpen({
-      listId,
-      todoId: null
-    });
+    setIsMenuOpen({ listId, todoId: null });
   };
 
   useEffect(() => {
@@ -277,7 +273,7 @@ function App() {
                   className="menu-popup"
                   style={{
                     top: `${menuPosition.top}px`,
-                    left: `${menuPosition.left}px`
+                    right: `${menuPosition.right}px`
                   }}
                 >
                   <button className="menu-item" onClick={() => {
@@ -334,56 +330,71 @@ function App() {
                               {...provided.dragHandleProps}
                               className={`todo-item ${todo.completed ? 'completed' : ''}`}
                             >
-                              <input
-                                type="checkbox"
-                                checked={todo.completed}
-                                onChange={() => handleToggleTodo(list.id, todo.id)}
-                              />
-                              {editingTodoId.listId === list.id && editingTodoId.todoId === todo.id ? (
+                              <div className="todo-container">
                                 <input
-                                  type="text"
-                                  value={newName}
-                                  onChange={(e) => setNewName(e.target.value)}
-                                  onBlur={() => handleUpdateTaskName(list.id, todo.id, newName)}
-                                  onKeyPress={(e) => {
-                                    if (e.key === 'Enter') {
-                                      handleUpdateTaskName(list.id, todo.id, newName)
-                                    }
-                                  }}
-                                  className="edit-input"
-                                  autoFocus
+                                  type="checkbox"
+                                  checked={todo.completed}
+                                  onChange={() => handleToggleTodo(list.id, todo.id)}
                                 />
-                              ) : (
-                                <div className="todo-content">
-                                  <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
-                                    {todo.text}
-                                  </span>
-                                  {todo.completed && <span className="completion-icon">😊</span>}
-                                </div>
-                              )}
-                              <div className="todo-actions">
-                                <button
-                                  className="menu-button"
-                                  onClick={(e) => handleTodoMenuClick(list.id, todo.id, e)}
-                                >
-                                  ⋮
-                                </button>
-                                {isMenuOpen.listId === list.id && isMenuOpen.todoId === todo.id && (
-                                  <div 
-                                    className="menu-popup"
-                                    style={{
-                                      top: `${menuPosition.top}px`,
-                                      left: `${menuPosition.left}px`
+                                {editingTodoId.listId === list.id && editingTodoId.todoId === todo.id ? (
+                                  <input
+                                    type="text"
+                                    value={newName}
+                                    onChange={(e) => setNewName(e.target.value)}
+                                    onBlur={() => handleUpdateTaskName(list.id, todo.id, newName)}
+                                    onKeyPress={(e) => {
+                                      if (e.key === 'Enter') {
+                                        handleUpdateTaskName(list.id, todo.id, newName)
+                                      }
                                     }}
-                                  >
-                                    <button onClick={() => {
-                                      setEditingTodoId({ listId: list.id, todoId: todo.id })
-                                      setNewName(todo.text)
-                                      setIsMenuOpen({ listId: null, todoId: null })
-                                    }}>Düzenle</button>
-                                    <button onClick={() => handleDeleteTodo(list.id, todo.id)}>Sil</button>
+                                    className="edit-input"
+                                    autoFocus
+                                  />
+                                ) : (
+                                  <div className="todo-content">
+                                    <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+                                      {todo.text}
+                                    </span>
+                                    {todo.completed && <span className="completion-icon">😊</span>}
                                   </div>
                                 )}
+                                <div className="todo-actions">
+                                  <button
+                                    className="menu-button"
+                                    onClick={(e) => handleTodoMenuClick(list.id, todo.id, e)}
+                                  >
+                                    ⋮
+                                  </button>
+                                  {isMenuOpen.listId === list.id && isMenuOpen.todoId === todo.id && (
+                                    <div 
+                                      className="menu-popup todo-menu"
+                                      style={{
+                                        position: 'absolute',
+                                        top: `${menuPosition.top}px`,
+                                        right: `${menuPosition.right}px`
+                                      }}
+                                    >
+                                      <button 
+                                        className="menu-item"
+                                        onClick={() => {
+                                          setEditingTodoId({ listId: list.id, todoId: todo.id })
+                                          setNewName(todo.text)
+                                          setIsMenuOpen({ listId: null, todoId: null })
+                                        }}
+                                      >
+                                        <span className="material-icons">edit</span>
+                                        Düzenle
+                                      </button>
+                                      <button 
+                                        className="menu-item delete"
+                                        onClick={() => handleDeleteTodo(list.id, todo.id)}
+                                      >
+                                        <span className="material-icons">delete</span>
+                                        Sil
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </li>
                           )}
