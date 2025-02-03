@@ -17,6 +17,7 @@
   min-height: 100vh;
   background-color: var(--background-color);
   padding: 2rem;
+  width: 100%;
 }
 
 .app-header {
@@ -31,23 +32,22 @@
 }
 
 .lists-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
   max-width: 1200px;
+  gap: 1rem;
+  padding: 1rem;
   margin: 0 auto;
 }
 
 .list-card {
-  background: var(--card-background);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
-  padding: 1.5rem;
-  transition: box-shadow 0.3s ease;
-}
-
-.list-card:hover {
-  box-shadow: var(--shadow-md);
+  flex: 1 0 calc(33.333% - 1rem); /* 3 kolon için */
+  min-width: 300px; /* minimum genişlik */
+  max-width: calc(33.333% - 1rem); /* maksimum genişlik */
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .list-form, .todo-form {
@@ -137,7 +137,6 @@
 }
 
 .todo-item:hover {
-  transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
 
@@ -180,7 +179,6 @@
   padding: 0.5rem;
   z-index: 1000;
   min-width: 150px;
-  right: 0;
   margin-top: 0.5rem;
 }
 
@@ -258,4 +256,18 @@
 .material-icons {
   font-size: 1.25rem;
   color: var(--text-secondary);
+}
+
+@media (max-width: 1200px) {
+  .list-card {
+    flex: 1 0 calc(50% - 1rem); /* 2 kolon */
+    max-width: calc(50% - 1rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .list-card {
+    flex: 1 0 100%; /* 1 kolon */
+    max-width: 100%;
+  }
 }

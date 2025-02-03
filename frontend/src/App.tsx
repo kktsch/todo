@@ -26,6 +26,7 @@ interface List {
   id: number;
   title: string;
   createdAt: string;
+  order?: number;
 }
 
 interface MenuPosition {
@@ -179,7 +180,6 @@ function App() {
       await updateTodoOrder(listId, movedItem.id, result.destination.index);
     } catch (error) {
       console.error('Sıralama güncellenirken hata oluştu:', error);
-      alert('Sıralama kaydedilirken bir hata oluştu');
     }
   };
 
@@ -246,7 +246,7 @@ function App() {
       </header>
 
       <div className="lists-container">
-        {lists.map(list => (
+        {lists.map((list) => (
           <div key={list.id} className="list-card">
             <div className="list-header">
               {editingListId === list.id ? (
