@@ -4,7 +4,7 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: 'https://todo-frontend-4e7s.onrender.com',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   credentials: true
 }));
