@@ -249,7 +249,23 @@ function App() {
         {lists.map(list => (
           <div key={list.id} className="list-card">
             <div className="list-header">
-              <h2>{list.title}</h2>
+              {editingListId === list.id ? (
+                <input
+                  type="text"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  onBlur={() => handleUpdateList(list.id, newName)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleUpdateList(list.id, newName)
+                    }
+                  }}
+                  className="edit-input"
+                  autoFocus
+                />
+              ) : (
+                <h2>{list.title}</h2>
+              )}
               <button
                 className="icon-button"
                 onClick={(e) => handleListMenuClick(list.id, e)}
