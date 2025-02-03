@@ -160,7 +160,7 @@ function App() {
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
-    const [listId, todoId] = result.draggableId.split('-').map(Number);
+    const [listId] = result.draggableId.split('-').map(Number);
     const items = Array.from(todos[listId]);
     const [movedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, movedItem);
